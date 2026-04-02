@@ -81,11 +81,11 @@
             <form id="weddingForm">
                 <div class="form-group">
                     <label>📝 Ваше имя и фамилия</label>
-                    <input type="text" id="guestName" required>
+                    <input type="text" name="Имя" required>
                 </div>
                 <div class="form-group">
                     <label>👥 Количество гостей</label>
-                    <select id="guestCount">
+                    <select name="Количество гостей">
                         <option value="1">1 человек</option>
                         <option value="2">2 человека</option>
                         <option value="3">3 человека</option>
@@ -95,18 +95,18 @@
                 </div>
                 <div class="form-group">
                     <label>🥂 Напитки</label>
-                    <textarea id="drinks" rows="2" placeholder="Шампанское, вино, безалкогольное..."></textarea>
+                    <textarea name="Напитки" rows="2" placeholder="Шампанское, вино, безалкогольное..."></textarea>
                 </div>
                 <div class="form-group">
                     <label>✅ Присутствие</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="attending" value="yes" checked> Да, с радостью</label>
-                        <label><input type="radio" name="attending" value="no"> К сожалению, не смогу</label>
+                        <label><input type="radio" name="Присутствие" value="Будет" checked> Да, с радостью</label>
+                        <label><input type="radio" name="Присутствие" value="Не будет"> К сожалению, не смогу</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>💬 Комментарий</label>
-                    <textarea id="comment" rows="2" placeholder="Аллергии, пожелания..."></textarea>
+                    <textarea name="Комментарий" rows="2" placeholder="Аллергии, пожелания..."></textarea>
                 </div>
                 <button type="submit" class="submit-btn">Отправить ответ</button>
             </form>
@@ -135,47 +135,32 @@
 
     const form = document.getElementById('weddingForm');
     const msgDiv = document.getElementById('responseMessage');
-
-    // ⚠️ ВСТАВЬ СВОЮ ССЫЛКУ ИЗ APPS SCRIPT (та же, что была)
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwICiagzwB7UuwWmg8T5VJouu1E22fX03G0_7YLon6qvj-WvPp2trSPiqF4M4Pa1Hi7uw/exec';
+    
+    // ⚠️ ЗАМЕНИ ССЫЛКУ НА ТВОЮ ИЗ FORMSUBMIT
+    const FORM_ENDPOINT = 'https://formsubmit.co/rinat.suleymanov.2000@list.ru';
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const name = document.getElementById('guestName').value.trim();
-        if (!name) { msgDiv.innerHTML = '❓ Укажите имя'; msgDiv.style.color = '#c45a4a'; return; }
-        
-        const attending = document.querySelector('input[name="attending"]:checked').value;
-        const count = document.getElementById('guestCount').value;
-        const drinks = document.getElementById('drinks').value;
-        const comment = document.getElementById('comment').value;
-        
-        // Отправляем как form-data (это самый надёжный способ)
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('attending', attending);
-        formData.append('count', count);
-        formData.append('drinks', drinks);
-        formData.append('comment', comment);
+        const formData = new FormData(form);
+        formData.append('_subject', 'Новый ответ на приглашение');
+        formData.append('_captcha', 'false');
         
         try {
-            const response = await fetch(SCRIPT_URL, {
+            const response = await fetch(FORM_ENDPOINT, {
                 method: 'POST',
                 body: formData
             });
             
-            const result = await response.json();
-            
-            if (result.status === 'success') {
-                msgDiv.innerHTML = `🎉 ${name}, спасибо! Ответ сохранён. Ждём вас! 🥂`;
+            if (response.ok) {
+                msgDiv.innerHTML = `🎉 Спасибо! Ваш ответ отправлен. Ждём вас! 🥂`;
                 msgDiv.style.color = '#2f6e47';
                 form.reset();
-                document.querySelector('input[value="yes"]').checked = true;
+                document.querySelector('input[value="Будет"]').checked = true;
             } else {
-                throw new Error(result.message);
+                throw new Error();
             }
         } catch (error) {
-            console.error(error);
             msgDiv.innerHTML = '❌ Ошибка. Попробуйте ещё раз.';
             msgDiv.style.color = '#c45a4a';
         }
