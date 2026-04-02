@@ -81,11 +81,11 @@
             <form id="weddingForm">
                 <div class="form-group">
                     <label>📝 Ваше имя и фамилия</label>
-                    <input type="text" id="guestName" name="Имя" required>
+                    <input type="text" id="guestName" required>
                 </div>
                 <div class="form-group">
                     <label>👥 Количество гостей</label>
-                    <select id="guestCount" name="Количество гостей">
+                    <select id="guestCount">
                         <option value="1">1 человек</option>
                         <option value="2">2 человека</option>
                         <option value="3">3 человека</option>
@@ -95,18 +95,18 @@
                 </div>
                 <div class="form-group">
                     <label>🥂 Напитки</label>
-                    <textarea id="drinks" name="Напитки" rows="2" placeholder="Шампанское, вино, безалкогольное..."></textarea>
+                    <textarea id="drinks" rows="2" placeholder="Шампанское, вино, безалкогольное..."></textarea>
                 </div>
                 <div class="form-group">
                     <label>✅ Присутствие</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="Присутствие" value="Будет" checked> Да, с радостью</label>
-                        <label><input type="radio" name="Присутствие" value="Не будет"> К сожалению, не смогу</label>
+                        <label><input type="radio" name="attending" value="yes" checked> Да, с радостью</label>
+                        <label><input type="radio" name="attending" value="no"> К сожалению, не смогу</label>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>💬 Комментарий</label>
-                    <textarea id="comment" name="Комментарий" rows="2" placeholder="Аллергии, пожелания..."></textarea>
+                    <textarea id="comment" rows="2" placeholder="Аллергии, пожелания..."></textarea>
                 </div>
                 <button type="submit" class="submit-btn">Отправить ответ</button>
             </form>
@@ -133,12 +133,12 @@
     }
     updateCountdown(); setInterval(updateCountdown, 1000);
 
-    // ОТПРАВКА НА ПОЧТУ ЧЕРЕЗ FORMSUBMIT
+    // ========== ОТПРАВКА В GOOGLE ТАБЛИЦУ ==========
     const form = document.getElementById('weddingForm');
     const msgDiv = document.getElementById('responseMessage');
 
-    // ⚠️ ЗАМЕНИТЕ ЭТУ ССЫЛКУ НА ВАШУ ИЗ FORMSUBMIT
-    const FORM_ENDPOINT = 'https://formsubmit.co/sangelina2005@icloud.com';
+    // ВАША ССЫЛКА НА ВЕБ-ПРИЛОЖЕНИЕ
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsPZIlYC7hFrdWdH80X63ypKn_DwS6TlsUvjm5AojYl1rm7Bv4gi6XBcrUAqHW7WBOUQ/exec';
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -146,20 +146,27 @@
         const name = document.getElementById('guestName').value.trim();
         if (!name) { msgDiv.innerHTML = '❓ Укажите имя'; msgDiv.style.color = '#c45a4a'; return; }
         
-        const formData = new FormData(form);
-        formData.append('_subject', `Новый ответ на приглашение от ${name}`);
-        formData.append('_captcha', 'false');
+        const attending = document.querySelector('input[name="attending"]:checked').value;
+        const count = document.getElementById('guestCount').value;
+        const drinks = document.getElementById('drinks').value;
+        const comment = document.getElementById('comment').value;
+        
+        const data = { name, attending, count, drinks, comment };
         
         try {
-            const response = await fetch(FORM_ENDPOINT, { method: 'POST', body: formData });
-            if (response.ok) {
-                msgDiv.innerHTML = `🎉 ${name}, спасибо! Ответ отправлен. Ждём вас! 🥂`;
-                msgDiv.style.color = '#2f6e47';
-                form.reset();
-                document.querySelector('input[value="Будет"]').checked = true;
-            } else throw new Error();
+            const response = await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            msgDiv.innerHTML = `🎉 ${name}, спасибо! Ответ отправлен. Ждём вас! 🥂`;
+            msgDiv.style.color = '#2f6e47';
+            form.reset();
+            document.querySelector('input[value="yes"]').checked = true;
         } catch (error) {
-            msgDiv.innerHTML = '❌ Ошибка. Попробуйте ещё раз или напишите нам.';
+            msgDiv.innerHTML = '❌ Ошибка. Попробуйте ещё раз.';
             msgDiv.style.color = '#c45a4a';
         }
         setTimeout(() => msgDiv.innerHTML = '', 5000);
