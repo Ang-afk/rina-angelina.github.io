@@ -1,107 +1,70 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админ-панель | Ринат & Ангелина</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #fef7e8; font-family: 'Raleway', sans-serif; padding: 2rem; }
-        .admin-container { max-width: 1300px; margin: 0 auto; }
+        body { font-family: 'Raleway', sans-serif; background: #fef7e8; padding: 20px; }
         h1 { font-family: 'Playfair Display', serif; color: #3a6b47; }
-        .stats { display: flex; gap: 1rem; margin: 1rem 0; flex-wrap: wrap; }
-        .stat-card { background: white; padding: 1rem; border-radius: 28px; border: 1px solid #ddecd5; }
-        .stat-card .number { font-size: 2rem; font-weight: 700; color: #3a6b47; }
-        .btn { background: #4b7b5a; color: white; border: none; padding: 8px 16px; border-radius: 40px; cursor: pointer; margin-right: 0.5rem; }
-        .btn-danger { background: #c27d64; }
-        table { width: 100%; background: white; border-radius: 28px; border-collapse: collapse; overflow: hidden; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #edf6e8; }
-        th { background: #fafef7; color: #3a6b47; }
-        .status-yes { color: #2f6e47; font-weight: bold; }
-        .status-no { color: #c27d64; font-weight: bold; }
-        .empty { text-align: center; padding: 2rem; color: #aac2a4; }
-        footer { margin-top: 2rem; text-align: center; color: #aac2a4; }
+        table { border-collapse: collapse; width: 100%; background: white; border-radius: 28px; overflow: hidden; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background: #4b7b5a; color: white; }
+        .yes { color: #2f6e47; font-weight: bold; }
+        .no { color: #c27d64; font-weight: bold; }
+        .refresh-btn { background: #4b7b5a; color: white; border: none; padding: 8px 20px; border-radius: 40px; cursor: pointer; margin-bottom: 20px; }
+        .refresh-btn:hover { background: #3a5e46; }
     </style>
 </head>
 <body>
-<div class="admin-container">
-    <h1>🌿 Админ-панель</h1>
-    <p>Все ответы гостей</p>
+    <h1>🌿 Ответы гостей</h1>
+    <button class="refresh-btn" id="refreshBtn">🔄 Обновить</button>
+    <div id="responses">Загрузка...</div>
 
-    <div class="stats">
-        <div class="stat-card"><h3>Всего ответов</h3><div class="number" id="totalCount">0</div></div>
-        <div class="stat-card"><h3>✅ Придут</h3><div class="number" id="yesCount">0</div></div>
-        <div class="stat-card"><h3>❌ Не придут</h3><div class="number" id="noCount">0</div></div>
-    </div>
-
-    <div>
-        <button class="btn" id="refreshBtn">🔄 Обновить</button>
-        <button class="btn btn-danger" id="clearBtn">🗑️ Очистить</button>
-    </div>
-
-    <div style="overflow-x: auto; margin-top: 1rem;">
-        <table id="responsesTable">
-            <thead><tr><th>Дата</th><th>Имя</th><th>Присутствие</th><th>Гостей</th><th>Напитки</th><th>Комментарий</th></tr></thead>
-            <tbody id="tableBody"><tr><td colspan="6" class="empty">Загрузка...</td></tr></tbody>
-        </table>
-    </div>
-    <footer>Данные синхронизируются через GitHub</footer>
-</div>
-
-<script>
-    // ⚠️ ВСТАВЬ ТОТ ЖЕ ID GIST
-    const GIST_ID = '1ae6fa29d7acb7d1c4bd06accd9e00f1'; // ЗАМЕНИ НА СВОЙ ID
-
-    async function loadResponses() {
-        try {
-            const res = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-            const gist = await res.json();
-            const data = JSON.parse(gist.files['data.json'].content);
-            const responses = data.responses || [];
-            
-            document.getElementById('totalCount').innerText = responses.length;
-            document.getElementById('yesCount').innerText = responses.filter(r => r.attending === 'yes').length;
-            document.getElementById('noCount').innerText = responses.filter(r => r.attending === 'no').length;
-            
-            const tbody = document.getElementById('tableBody');
-            if (responses.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="empty">📭 Пока нет ответов</td></tr>';
-                return;
+    <script>
+        // ⚠️ ВСТАВЬ СВОЙ URL ИЗ RENDER
+        const API_URL = 'https://wedding-server-zyzg.onrender.com';
+        
+        async function load() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+                
+                if (!data.length) {
+                    document.getElementById('responses').innerHTML = '<p>📭 Пока нет ответов</p>';
+                    return;
+                }
+                
+                let html = '<table><thead><tr><th>Время</th><th>Имя</th><th>Присутствие</th><th>Гостей</th><th>Напитки</th><th>Комментарий</th></tr></thead><tbody>';
+                data.forEach(r => {
+                    html += `<tr>
+                        <td>${new Date(r.created_at).toLocaleString()}</td>
+                        <td><strong>${escapeHtml(r.name)}</strong></td>
+                        <td class="${r.attending === 'yes' ? 'yes' : 'no'}">${r.attending === 'yes' ? '✅ Будет' : '❌ Не будет'}</td>
+                        <td>${r.guests}</td>
+                        <td>${escapeHtml(r.drinks || '—')}</td>
+                        <td>${escapeHtml(r.comment || '—')}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('responses').innerHTML = html;
+            } catch (e) {
+                document.getElementById('responses').innerHTML = '<p>❌ Ошибка загрузки. Проверь, работает ли сервер.</p>';
             }
-            
-            tbody.innerHTML = responses.slice().reverse().map(r => `
-                <tr>
-                    <td>${r.timestamp || '—'}</td>
-                    <td><strong>${escapeHtml(r.name)}</strong></td>
-                    <td class="${r.attending === 'yes' ? 'status-yes' : 'status-no'}">${r.attending === 'yes' ? '✅ Будет' : '❌ Не будет'}</td>
-                    <td>${r.attending === 'yes' ? (r.count || '1') : '—'}</td>
-                    <td>${escapeHtml(r.drinks || '—')}</td>
-                    <td>${escapeHtml(r.comment || '—')}</td>
-                </tr>
-            `).join('');
-        } catch (e) {
-            document.getElementById('tableBody').innerHTML = '<tr><td colspan="6" class="empty">Ошибка загрузки</td></tr>';
         }
-    }
-    
-    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { return m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'; }); }
-    
-    async function clearAll() {
-        if (confirm('Удалить ВСЕ ответы?')) {
-            await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ files: { 'data.json': { content: JSON.stringify({ responses: [] }, null, 2) } } })
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
             });
-            loadResponses();
         }
-    }
-    
-    document.getElementById('refreshBtn').addEventListener('click', loadResponses);
-    document.getElementById('clearBtn').addEventListener('click', clearAll);
-    loadResponses();
-    setInterval(loadResponses, 10000);
-</script>
+        
+        document.getElementById('refreshBtn').addEventListener('click', load);
+        load();
+        setInterval(load, 10000);
+    </script>
 </body>
 </html>
