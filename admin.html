@@ -2,14 +2,255 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Админ-панель</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель | Ответы на приглашение</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: #f0f5ec;
+            padding: 2rem;
+        }
+        .admin-container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: #2a5c3e;
+            margin-bottom: 0.5rem;
+        }
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: white;
+            padding: 1rem 1.8rem;
+            border-radius: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #ddecd5;
+        }
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: #6f8f72;
+            letter-spacing: 1px;
+        }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3c6e47;
+        }
+        .controls {
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn {
+            background: #3c6e47;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .btn-danger {
+            background: #c27d64;
+        }
+        .btn-danger:hover {
+            background: #a55e46;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            border-collapse: collapse;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid #edf6e8;
+            vertical-align: top;
+        }
+        th {
+            background: #fafef7;
+            color: #2a5436;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        tr:hover {
+            background: #fefef5;
+        }
+        .status-yes {
+            color: #2f6e47;
+            font-weight: bold;
+        }
+        .status-no {
+            color: #c27d64;
+            font-weight: bold;
+        }
+        .empty {
+            text-align: center;
+            padding: 3rem;
+            color: #aac2a4;
+            font-size: 1.1rem;
+        }
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: #aac2a4;
+            font-size: 0.8rem;
+        }
+        @media (max-width: 800px) {
+            body { padding: 1rem; }
+            th, td { font-size: 0.75rem; padding: 8px 6px; }
+        }
+    </style>
 </head>
 <body>
+<div class="admin-container">
     <h1>🌿 Админ-панель</h1>
-    <div id="responses"></div>
-    <script>
+    <p>Все ответы гостей на приглашение</p>
+
+    <div class="stats" id="statsPanel">
+        <div class="stat-card"><h3>Всего ответов</h3><div class="number" id="totalCount">0</div></div>
+        <div class="stat-card"><h3>✅ Придут</h3><div class="number" id="yesCount">0</div></div>
+        <div class="stat-card"><h3>❌ Не придут</h3><div class="number" id="noCount">0</div></div>
+        <div class="stat-card"><h3>👥 Всего гостей</h3><div class="number" id="totalGuests">0</div></div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" id="refreshBtn">🔄 Обновить</button>
+        <button class="btn btn-danger" id="clearBtn">🗑️ Очистить все ответы</button>
+        <button class="btn" id="exportBtn">📎 Экспорт в CSV</button>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table id="responsesTable">
+            <thead>
+                <tr><th>Дата и время</th><th>Имя</th><th>Присутствие</th><th>Гостей</th><th>Напитки</th><th>Комментарий</th></tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr><td colspan="6" class="empty">Загрузка ответов...</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <footer>Данные хранятся в вашем браузере. Чтобы не потерять — сделайте экспорт в CSV.</footer>
+</div>
+
+<script>
+    function loadResponses() {
         const responses = JSON.parse(localStorage.getItem('weddingResponses') || '[]');
-        document.getElementById('responses').innerHTML = '<pre>' + JSON.stringify(responses, null, 2) + '</pre>';
-    </script>
+        
+        // Статистика
+        const total = responses.length;
+        const yes = responses.filter(r => r.attending === 'yes').length;
+        const no = responses.filter(r => r.attending === 'no').length;
+        const totalGuests = responses.reduce((sum, r) => {
+            if (r.attending === 'yes') return sum + (parseInt(r.count) || 1);
+            return sum;
+        }, 0);
+        
+        document.getElementById('totalCount').innerText = total;
+        document.getElementById('yesCount').innerText = yes;
+        document.getElementById('noCount').innerText = no;
+        document.getElementById('totalGuests').innerText = totalGuests;
+        
+        // Таблица
+        const tbody = document.getElementById('tableBody');
+        if (responses.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="empty">📭 Пока нет ни одного ответа</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = responses.reverse().map(r => `
+            <tr>
+                <td style="white-space: nowrap;">${r.timestamp || '—'}</td>
+                <td><strong>${escapeHtml(r.name)}</strong></td>
+                <td class="${r.attending === 'yes' ? 'status-yes' : 'status-no'}">${r.attending === 'yes' ? '✅ Будет' : '❌ Не будет'}</td>
+                <td>${r.attending === 'yes' ? (r.count || '1') : '—'}</td>
+                <td style="max-width: 200px;">${escapeHtml(r.drinks || '—')}</td>
+                <td style="max-width: 250px;">${escapeHtml(r.comment || '—')}</td>
+            </tr>
+        `).join('');
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function exportToCSV() {
+        const responses = JSON.parse(localStorage.getItem('weddingResponses') || '[]');
+        if (responses.length === 0) {
+            alert('Нет данных для экспорта');
+            return;
+        }
+        
+        const headers = ['Дата', 'Имя', 'Присутствие', 'Количество гостей', 'Напитки', 'Комментарий'];
+        const rows = responses.map(r => [
+            r.timestamp || '',
+            r.name,
+            r.attending === 'yes' ? 'Будет' : 'Не будет',
+            r.attending === 'yes' ? (r.count || '1') : '0',
+            (r.drinks || '').replace(/,/g, ';'),
+            (r.comment || '').replace(/,/g, ';')
+        ]);
+        
+        const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute('download', 'wedding_responses.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+    
+    function clearAllResponses() {
+        if (confirm('⚠️ ВНИМАНИЕ! Это удалит ВСЕ ответы гостей без возможности восстановления. Вы уверены?')) {
+            localStorage.setItem('weddingResponses', '[]');
+            loadResponses();
+            alert('Все ответы удалены');
+        }
+    }
+    
+    document.getElementById('refreshBtn').addEventListener('click', loadResponses);
+    document.getElementById('clearBtn').addEventListener('click', clearAllResponses);
+    document.getElementById('exportBtn').addEventListener('click', exportToCSV);
+    
+    // Загружаем при открытии
+    loadResponses();
+    
+    // Автообновление каждые 10 секунд (пока открыта админка)
+    setInterval(loadResponses, 10000);
+</script>
 </body>
 </html>
