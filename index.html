@@ -420,9 +420,12 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // ОТПРАВКА В GOOGLE ТАБЛИЦУ
+    // ========== ОТПРАВКА В GOOGLE ТАБЛИЦУ ==========
     const form = document.getElementById('weddingForm');
     const msgDiv = document.getElementById('responseMessage');
+
+    // ⚠️ ВСТАВЬТЕ ВАШУ ССЫЛКУ НА ВЕБ-ПРИЛОЖЕНИЕ ВМЕСТО ПРИМЕРА НИЖЕ
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsPZIlYC7hFrdWdH80X63ypKn_DwS6TlsUvjm5AojYl1rm7Bv4gi6XBcrUAqHW7WBOUQ/exec';
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -442,32 +445,35 @@
         const data = { name, attending, count, drinks, comment };
         
         try {
-            // ⚠️ ВСТАВЬТЕ ВАШУ ССЫЛКУ НА ВЕБ-ПРИЛОЖЕНИЕ ВМЕСТО 'ВАША_ССЫЛКА_ЗДЕСЬ'
-            const response = await fetch('https://script.google.com/macros/s/AKfycbwsPZIlYC7hFrdWdH80X63ypKn_DwS6TlsUvjm5AojYl1rm7Bv4gi6XBcrUAqHW7WBOUQ/exec', {
+            const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
             
-            if (attending === 'yes') {
-                msgDiv.innerHTML = `🎉 ${name}, спасибо! Ждём вас${count > 1 ? ` с компанией (${count} чел.)` : ''} 26 июня. 🥂`;
-                msgDiv.style.color = '#2f6e47';
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                if (attending === 'yes') {
+                    msgDiv.innerHTML = `🎉 ${name}, спасибо! Ждём вас${count > 1 ? ` с компанией (${count} чел.)` : ''} 26 июня. 🥂`;
+                    msgDiv.style.color = '#2f6e47';
+                } else {
+                    msgDiv.innerHTML = `🕊️ ${name}, очень жаль, что не сможете быть. Будем скучать!`;
+                    msgDiv.style.color = '#aa8f6e';
+                }
+                form.reset();
+                document.querySelector('input[value="yes"]').checked = true;
             } else {
-                msgDiv.innerHTML = `🕊️ ${name}, очень жаль, что не сможете быть. Будем скучать!`;
-                msgDiv.style.color = '#aa8f6e';
+                throw new Error(result.message || 'Неизвестная ошибка');
             }
-            
-            form.reset();
-            document.querySelector('input[value="yes"]').checked = true;
-            
         } catch (error) {
-            msgDiv.innerHTML = '❌ Ошибка, попробуйте ещё раз.';
+            console.error('Ошибка:', error);
+            msgDiv.innerHTML = '❌ Ошибка отправки. Попробуйте ещё раз или напишите нам лично.';
             msgDiv.style.color = '#c45a4a';
         }
         
         setTimeout(() => {
-            msgDiv.innerHTML = '';
+            if (msgDiv.innerHTML) msgDiv.innerHTML = '';
         }, 5000);
     });
 </script>
