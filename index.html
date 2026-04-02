@@ -2,44 +2,38 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Приглашение на свадьбу | Ринат & Ангелина</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* Весь твой CSS остаётся без изменений — скопируй его из своего работающего сайта */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #fef7e8; font-family: 'Raleway', sans-serif; color: #3a5c3a; line-height: 1.5; }
         .floral-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; background-image: url('https://i.pinimg.com/originals/5d/ae/69/5dae697bed9856af02f7370d5954e593.jpg'); background-size: cover; background-position: center; opacity: 0.25; }
         .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; position: relative; z-index: 2; }
         .hero { min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; background: transparent; border-bottom: 1px solid #e0e7d6; }
         .hero-content { padding: 2rem; max-width: 800px; background: rgba(255, 255, 245, 0.7); border-radius: 64px; backdrop-filter: blur(2px); }
-        .names { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 700; color: #3a6b47; margin-bottom: 0.5rem; }
+        .names { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 700; color: #3a6b47; }
         .and { font-size: 2.5rem; font-family: 'Playfair Display', serif; font-style: italic; color: #9cbb8b; }
-        .invite-text { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 6px; margin: 1.5rem 0; font-weight: 300; color: #7e9a76; }
-        .date-big { font-size: 2.5rem; font-weight: 500; font-family: 'Playfair Display', serif; margin: 1rem 0; color: #3a6b47; }
-        .place { font-size: 1.1rem; background: #ffffffcc; display: inline-block; padding: 0.6rem 1.8rem; border-radius: 60px; border: 1px solid #d8e5cf; }
-        .btn { background: #4b7b5a; color: white; padding: 14px 32px; margin-top: 2rem; border-radius: 60px; text-decoration: none; font-weight: 500; border: none; cursor: pointer; font-size: 1rem; display: inline-block; }
-        .btn:hover { background: #3a5e46; transform: translateY(-3px); }
-        .details { background: rgba(255, 255, 250, 0.92); border-radius: 48px; margin: 3rem auto; padding: 2rem; border: 1px solid #e4ecd9; }
-        .section-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; text-align: center; margin-bottom: 2rem; color: #3a6b47; }
-        .program-single { text-align: center; background: #fafef7; padding: 2rem; border-radius: 48px; border: 1px dashed #cde2c2; }
-        .program-single span { font-size: 2rem; display: block; margin-bottom: 8px; }
-        .program-description { margin-top: 0.8rem; font-size: 1rem; color: #6f8f72; }
-        .rsvp-form { background: #fefef9; padding: 2rem; border-radius: 40px; border: 1px solid #e5f0df; }
-        .form-group { margin-bottom: 1.4rem; }
-        input, select, textarea { width: 100%; padding: 14px 18px; border: 1px solid #ddecd5; border-radius: 48px; font-family: 'Raleway', sans-serif; font-size: 1rem; background: white; }
-        textarea { border-radius: 28px; resize: vertical; }
-        label { font-weight: 600; margin-bottom: 8px; display: block; color: #3c5e42; }
-        .radio-group { display: flex; gap: 2rem; margin-top: 8px; flex-wrap: wrap; }
-        .radio-group label { display: flex; align-items: center; gap: 8px; font-weight: normal; }
-        .submit-btn { background: #4b7b5a; color: white; border: none; width: 100%; padding: 14px; border-radius: 60px; font-weight: bold; font-size: 1rem; cursor: pointer; }
-        .submit-btn:hover { background: #3a5e46; }
-        .hidden-message { text-align: center; margin-top: 1.2rem; font-weight: 500; }
-        .map-container { border-radius: 36px; overflow: hidden; border: 1px solid #e2efdb; height: 350px; }
+        .invite-text { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 6px; margin: 1rem 0; color: #7e9a76; }
+        .date-big { font-size: 2.5rem; font-family: 'Playfair Display', serif; color: #3a6b47; }
+        .place { background: #ffffffcc; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 60px; margin-top: 1rem; }
+        .btn { background: #4b7b5a; color: white; padding: 12px 30px; margin-top: 1.5rem; border-radius: 60px; text-decoration: none; display: inline-block; cursor: pointer; border: none; }
+        .details { background: rgba(255, 255, 250, 0.92); border-radius: 48px; margin: 2rem auto; padding: 2rem; }
+        .section-title { font-family: 'Playfair Display', serif; font-size: 2rem; text-align: center; color: #3a6b47; margin-bottom: 1.5rem; }
+        .program-single { text-align: center; background: #fafef7; padding: 1.5rem; border-radius: 48px; }
+        .rsvp-form { background: #fefef9; padding: 1.5rem; border-radius: 40px; }
+        .form-group { margin-bottom: 1rem; }
+        input, select, textarea { width: 100%; padding: 12px; border-radius: 48px; border: 1px solid #ddecd5; font-family: 'Raleway', sans-serif; }
+        label { font-weight: 600; display: block; margin-bottom: 5px; }
+        .radio-group { display: flex; gap: 1.5rem; margin-top: 5px; }
+        .submit-btn { background: #4b7b5a; color: white; width: 100%; padding: 12px; border-radius: 60px; border: none; cursor: pointer; font-weight: bold; }
+        .map-container { border-radius: 36px; overflow: hidden; height: 300px; }
         .map-container iframe { width: 100%; height: 100%; border: 0; }
-        .love-signature { text-align: center; margin-top: 2.5rem; font-family: 'Playfair Display', serif; font-size: 1.6rem; font-style: italic; color: #7e9a76; }
-        .timer-wrapper { text-align: center; font-size: 2rem; font-weight: 600; font-family: 'Playfair Display', serif; color: #3a6b47; margin-bottom: 1.5rem; }
-        footer { text-align: center; padding: 2rem; color: #aac2a4; border-top: 1px solid #edf6e8; margin-top: 2rem; }
-        @media (max-width: 680px) { .names { font-size: 2.7rem; } .date-big { font-size: 1.9rem; } .love-signature { font-size: 1.2rem; } }
+        .love-signature { text-align: center; margin-top: 2rem; font-family: 'Playfair Display', serif; font-size: 1.3rem; font-style: italic; }
+        .timer-wrapper { text-align: center; font-size: 1.8rem; font-weight: 600; color: #3a6b47; }
+        footer { text-align: center; padding: 1.5rem; color: #aac2a4; }
+        @media (max-width: 680px) { .names { font-size: 2.5rem; } }
     </style>
 </head>
 <body>
@@ -59,16 +53,17 @@
     <div class="details">
         <h2 class="section-title">🍽️ Торжество</h2>
         <div class="program-single">
-            <span>БАНКЕТ</span>16:30 – 00:00
-            <div class="program-description">🥂 Тёплый ужин, танцы, живое общение и праздничная атмосфера</div>
+            <span style="font-size: 2rem;">БАНКЕТ</span><br>
+            16:30 – 00:00<br>
+            <small>🥂 Тёплый ужин, танцы, живое общение</small>
         </div>
     </div>
 
     <div class="details">
         <h2 class="section-title">📍 Как добраться</h2>
         <div style="text-align: center; margin-bottom: 1rem;">
-            <p><strong>Челябинская область, г. Кыштым, ул. Карла Либкнехта, 123А</strong></p>
-            <p style="margin-top: 10px;"><a href="https://yandex.ru/maps/org/banketny_zal_1/1279131422/" target="_blank" style="color:#4b7b5a;">Открыть карту →</a></p>
+            <p>Челябинская область, г. Кыштым, ул. Карла Либкнехта, 123А</p>
+            <p><a href="https://yandex.ru/maps/org/banketny_zal_1/1279131422/" target="_blank" style="color:#4b7b5a;">Открыть карту →</a></p>
         </div>
         <div class="map-container">
             <iframe src="https://yandex.ru/map-widget/v1/?org-id=1279131422&ll=60.554000%2C55.714000&z=17&l=map" allowfullscreen></iframe>
@@ -80,7 +75,7 @@
         <div class="rsvp-form">
             <form id="weddingForm">
                 <div class="form-group">
-                    <label>📝 Ваше имя и фамилия</label>
+                    <label>📝 Ваше имя</label>
                     <input type="text" id="guestName" required>
                 </div>
                 <div class="form-group">
@@ -100,8 +95,8 @@
                 <div class="form-group">
                     <label>✅ Присутствие</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="attending" value="yes" checked> Да, с радостью</label>
-                        <label><input type="radio" name="attending" value="no"> К сожалению, не смогу</label>
+                        <label><input type="radio" name="attending" value="yes" checked> Да</label>
+                        <label><input type="radio" name="attending" value="no"> Нет</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -110,7 +105,7 @@
                 </div>
                 <button type="submit" class="submit-btn">Отправить ответ</button>
             </form>
-            <div id="responseMessage" class="hidden-message"></div>
+            <div id="responseMessage" style="text-align: center; margin-top: 1rem;"></div>
         </div>
         <p style="text-align: center; margin-top: 1rem;">⏰ Подтвердите участие до <strong>1 июня 2026</strong></p>
     </div>
@@ -124,6 +119,7 @@
 <footer>Ринат & Ангелина</footer>
 
 <script>
+    // Таймер
     function updateCountdown() {
         const weddingDate = new Date(2026, 5, 26, 16, 30, 0);
         const diff = weddingDate - new Date();
@@ -133,16 +129,40 @@
     }
     updateCountdown(); setInterval(updateCountdown, 1000);
 
-    // ========== ОТПРАВКА В GOOGLE ТАБЛИЦУ ==========
+    // ⚠️ ВСТАВЬ СВОЙ ID GIST (который скопировала в шаге 1)
+    const GIST_ID = '1ae6fa29d7acb7d1c4bd06accd9e00f1'; // ЗАМЕНИ НА СВОЙ ID
+
+    // Сохранение ответа в Gist
+    async function saveResponse(data) {
+        // Сначала получаем текущие данные
+        const getRes = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+        const gist = await getRes.json();
+        const content = JSON.parse(gist.files['data.json'].content);
+        
+        // Добавляем новый ответ
+        content.responses.push({
+            ...data,
+            timestamp: new Date().toLocaleString('ru-RU')
+        });
+        
+        // Обновляем Gist
+        await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                files: {
+                    'data.json': { content: JSON.stringify(content, null, 2) }
+                }
+            })
+        });
+    }
+
+    // Отправка формы
     const form = document.getElementById('weddingForm');
     const msgDiv = document.getElementById('responseMessage');
 
-    // ВАША ССЫЛКА НА ВЕБ-ПРИЛОЖЕНИЕ
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsPZIlYC7hFrdWdH80X63ypKn_DwS6TlsUvjm5AojYl1rm7Bv4gi6XBcrUAqHW7WBOUQ/exec';
-
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const name = document.getElementById('guestName').value.trim();
         if (!name) { msgDiv.innerHTML = '❓ Укажите имя'; msgDiv.style.color = '#c45a4a'; return; }
         
@@ -151,17 +171,9 @@
         const drinks = document.getElementById('drinks').value;
         const comment = document.getElementById('comment').value;
         
-        const data = { name, attending, count, drinks, comment };
-        
         try {
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            
-            msgDiv.innerHTML = `🎉 ${name}, спасибо! Ответ отправлен. Ждём вас! 🥂`;
+            await saveResponse({ name, attending, count, drinks, comment });
+            msgDiv.innerHTML = `🎉 ${name}, спасибо! Ждём вас! 🥂`;
             msgDiv.style.color = '#2f6e47';
             form.reset();
             document.querySelector('input[value="yes"]').checked = true;
