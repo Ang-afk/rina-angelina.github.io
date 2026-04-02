@@ -368,8 +368,8 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>🥂 Что будете пить? (напишите свои предпочтения)</label>
-                    <textarea id="drinks" rows="2" placeholder="Например: шампанское, белое вино, безалкогольное пиво, лимонад..."></textarea>
+                    <label>🥂 Что будете пить?</label>
+                    <textarea id="drinks" rows="2" placeholder="Например: шампанское, белое вино, безалкогольное пиво..."></textarea>
                 </div>
                 <div class="form-group">
                     <label>✅ Присутствие</label>
@@ -379,8 +379,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>💬 Пожелания / аллергии / комментарий</label>
-                    <textarea id="comment" rows="2" placeholder="Аллергии, особые пожелания по еде..."></textarea>
+                    <label>💬 Комментарий</label>
+                    <textarea id="comment" rows="2" placeholder="Аллергии, особые пожелания..."></textarea>
                 </div>
                 <button type="submit" class="submit-btn">Отправить ответ</button>
             </form>
@@ -420,10 +420,11 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
+    // ОТПРАВКА В GOOGLE ТАБЛИЦУ
     const form = document.getElementById('weddingForm');
     const msgDiv = document.getElementById('responseMessage');
 
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const name = document.getElementById('guestName').value.trim();
@@ -438,29 +439,31 @@
         const drinks = document.getElementById('drinks').value;
         const comment = document.getElementById('comment').value;
         
-        let responses = JSON.parse(localStorage.getItem('weddingResponses') || '[]');
+        const data = { name, attending, count, drinks, comment };
         
-        const newResponse = {
-            id: Date.now(),
-            name: name,
-            attending: attending,
-            count: count,
-            drinks: drinks,
-            comment: comment,
-            timestamp: new Date().toLocaleString('ru-RU')
-        };
-        responses.push(newResponse);
-        localStorage.setItem('weddingResponses', JSON.stringify(responses));
-        
-        form.reset();
-        document.querySelector('input[value="yes"]').checked = true;
-        
-        if (attending === 'yes') {
-            msgDiv.innerHTML = `🎉 ${name}, спасибо! Ждём вас${count > 1 ? ` с компанией (${count} чел.)` : ''} 26 июня. 🥂`;
-            msgDiv.style.color = '#2f6e47';
-        } else {
-            msgDiv.innerHTML = `🕊️ ${name}, очень жаль, что не сможете быть. Будем скучать!`;
-            msgDiv.style.color = '#aa8f6e';
+        try {
+            // ⚠️ ВСТАВЬТЕ ВАШУ ССЫЛКУ НА ВЕБ-ПРИЛОЖЕНИЕ ВМЕСТО 'ВАША_ССЫЛКА_ЗДЕСЬ'
+            const response = await fetch('https://script.google.com/macros/s/AKfycbyDYfGRkZRs6WXzpxSRiD4HRiSuhrw72w9ANX4Mna3Z7GgZtKkujmO6AhGrs5K3fUPdOw/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            if (attending === 'yes') {
+                msgDiv.innerHTML = `🎉 ${name}, спасибо! Ждём вас${count > 1 ? ` с компанией (${count} чел.)` : ''} 26 июня. 🥂`;
+                msgDiv.style.color = '#2f6e47';
+            } else {
+                msgDiv.innerHTML = `🕊️ ${name}, очень жаль, что не сможете быть. Будем скучать!`;
+                msgDiv.style.color = '#aa8f6e';
+            }
+            
+            form.reset();
+            document.querySelector('input[value="yes"]').checked = true;
+            
+        } catch (error) {
+            msgDiv.innerHTML = '❌ Ошибка, попробуйте ещё раз.';
+            msgDiv.style.color = '#c45a4a';
         }
         
         setTimeout(() => {
