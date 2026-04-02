@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Приглашение на свадьбу | Ринат & Ангелина</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fef7e8;
+            font-family: 'Raleway', sans-serif;
+            color: #3a5c3a;
+            line-height: 1.5;
+        }
+
+        .floral-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image: url('https://i.pinimg.com/originals/5d/ae/69/5dae697bed9856af02f7370d5954e593.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.25;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: transparent;
+            border-bottom: 1px solid #e0e7d6;
+        }
+
+        .hero-content {
+            padding: 2rem;
+            max-width: 800px;
+            background: rgba(255, 255, 245, 0.7);
+            border-radius: 64px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            backdrop-filter: blur(2px);
+        }
+
+        .names {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #3a6b47;
+            margin-bottom: 0.5rem;
+        }
+
+        .and {
+            font-size: 2.5rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: #9cbb8b;
+            margin: 0 0.5rem;
+        }
+
+        .invite-text {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin: 1.5rem 0;
+            font-weight: 300;
+            color: #7e9a76;
+        }
+
+        .date-big {
+            font-size: 2.5rem;
+            font-weight: 500;
+            font-family: 'Playfair Display', serif;
+            margin: 1rem 0;
+            color: #3a6b47;
+        }
+
+        .place {
+            font-size: 1.1rem;
+            font-weight: 400;
+            background: #ffffffcc;
+            display: inline-block;
+            padding: 0.6rem 1.8rem;
+            border-radius: 60px;
+            margin-top: 0.5rem;
+            backdrop-filter: blur(2px);
+            border: 1px solid #d8e5cf;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #4b7b5a;
+            color: white;
+            padding: 14px 32px;
+            margin-top: 2rem;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Raleway', sans-serif;
+            box-shadow: 0 4px 12px rgba(75, 123, 90, 0.2);
+        }
+
+        .btn:hover {
+            background: #3a5e46;
+            transform: translateY(-3px);
+        }
+
+        .details {
+            background: rgba(255, 255, 250, 0.92);
+            border-radius: 48px;
+            margin: 3rem auto;
+            padding: 2rem 2rem;
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.05);
+            border: 1px solid #e4ecd9;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #3a6b47;
+            position: relative;
+        }
+
+        .program-single {
+            text-align: center;
+            background: #fafef7;
+            padding: 2rem;
+            border-radius: 48px;
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #3a5e46;
+            border: 1px dashed #cde2c2;
+        }
+        .program-single span {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .program-description {
+            margin-top: 0.8rem;
+            font-size: 1rem;
+            color: #6f8f72;
+            font-weight: normal;
+        }
+
+        .rsvp-form {
+            background: #fefef9;
+            padding: 2rem;
+            border-radius: 40px;
+            margin-top: 1rem;
+            border: 1px solid #e5f0df;
+        }
+
+        .form-group {
+            margin-bottom: 1.4rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #ddecd5;
+            border-radius: 48px;
+            font-family: 'Raleway', sans-serif;
+            font-size: 1rem;
+            background: white;
+            transition: 0.2s;
+        }
+        textarea {
+            border-radius: 28px;
+            resize: vertical;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #8fc1a0;
+            box-shadow: 0 0 0 3px rgba(143,193,160,0.2);
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: #3c5e42;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 2rem;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: normal;
+        }
+
+        .submit-btn {
+            background: #4b7b5a;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1rem;
+            font-family: 'Raleway', sans-serif;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #3a5e46;
+        }
+
+        .hidden-message {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-weight: 500;
+        }
+
+        .map-container {
+            border-radius: 36px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #e2efdb;
+            height: 350px;
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .love-signature {
+            text-align: center;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-style: italic;
+            color: #7e9a76;
+            letter-spacing: 1px;
+        }
+
+        .timer-wrapper {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+            color: #3a6b47;
+            margin-bottom: 1.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.85rem;
+            color: #aac2a4;
+            border-top: 1px solid #edf6e8;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 680px) {
+            .names {
+                font-size: 2.7rem;
+            }
+            .date-big {
+                font-size: 1.9rem;
+            }
+            .program-single {
+                font-size: 1.2rem;
+            }
+            .hero-content {
+                background: rgba(255, 255, 245, 0.85);
+            }
+            .love-signature {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="floral-bg"></div>
+
+<div class="hero">
+    <div class="hero-content">
+        <div class="names">
+            Ринат <span class="and">&</span> Ангелина
+        </div>
+        <div class="invite-text">Приглашают на свадьбу</div>
+        <div class="date-big">26 июня 2026</div>
+        <div class="place">📍 Банкетный зал № 1, Кыштым, ул. Карла Либкнехта, 123А</div>
+        <a href="#rsvp" class="btn">Подтвердить присутствие →</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="details">
+        <h2 class="section-title">🍽️ Торжество</h2>
+        <div class="program-single">
+            <span>БАНКЕТ</span>
+            16:30 – 00:00
+            <div class="program-description">
+                🥂 Тёплый ужин, танцы, живое общение и праздничная атмосфера
+            </div>
+        </div>
+    </div>
+
+    <div class="details">
+        <h2 class="section-title">📍 Как добраться</h2>
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <p><strong>Челябинская область, г. Кыштым, ул. Карла Либкнехта, 123А, Банкетный зал № 1</strong></p>
+            <p style="margin-top: 10px;"><a href="https://yandex.ru/maps/org/banketny_zal_1/1279131422/" target="_blank" style="color:#4b7b5a; font-weight: 500;">Открыть карту в Яндекс.Картах →</a></p>
+        </div>
+        <div class="map-container">
+            <iframe src="https://yandex.ru/map-widget/v1/?org-id=1279131422&ll=60.554000%2C55.714000&z=17&l=map" 
+                    allowfullscreen="true" 
+                    loading="lazy">
+            </iframe>
+        </div>
+    </div>
+
+    <div class="details" id="rsvp">
+        <h2 class="section-title">💌 Ждём вас</h2>
+        <div class="rsvp-form">
+            <form id="weddingForm">
+                <div class="form-group">
+                    <label>📝 Ваше имя и фамилия</label>
+                    <input type="text" id="guestName" placeholder=" " required>
+                </div>
+                <div class="form-group">
+                    <label>👥 Количество гостей (включая вас)</label>
+                    <select id="guestCount">
+                        <option value="1">1 человек</option>
+                        <option value="2">2 человека</option>
+                        <option value="3">3 человека</option>
+                        <option value="4">4 человека</option>
+                        <option value="5">5 человек</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>🥂 Что будете пить? (напишите свои предпочтения)</label>
+                    <textarea id="drinks" rows="2" placeholder="Например: шампанское, белое вино, безалкогольное пиво, лимонад..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>✅ Присутствие</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="attending" value="yes" checked> Да, с радостью</label>
+                        <label><input type="radio" name="attending" value="no"> К сожалению, не смогу</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>💬 Пожелания / аллергии / комментарий</label>
+                    <textarea id="comment" rows="2" placeholder="Аллергии, особые пожелания по еде..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Отправить ответ</button>
+            </form>
+            <div id="responseMessage" class="hidden-message"></div>
+        </div>
+        <p style="text-align: center; margin-top: 1.4rem; font-size: 0.9rem;">⏰ Пожалуйста, подтвердите участие до <strong>1 июня 2026</strong></p>
+    </div>
+
+    <div class="details">
+        <h2 class="section-title">⏳ До нашей свадьбы</h2>
+        <div class="timer-wrapper" id="countdownTimer"></div>
+        <div class="love-signature">
+            🤍 С любовью, ваши Ринат и Ангелина 🤍
+        </div>
+    </div>
+</div>
+
+<footer>
+    Ринат & Ангелина
+</footer>
+
+<script>
+    function updateCountdown() {
+        const weddingDate = new Date(2026, 5, 26, 16, 30, 0);
+        const now = new Date();
+        const diff = weddingDate - now;
+        if (diff <= 0) {
+            document.getElementById('countdownTimer').innerHTML = "🎉 Сегодня наш день! 🎉";
+            return;
+        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (86400000)) / (3600000));
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        document.getElementById('countdownTimer').innerHTML = `${days} дн.  ${hours} ч.  ${minutes} мин.  ${seconds} сек.`;
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    const form = document.getElementById('weddingForm');
+    const msgDiv = document.getElementById('responseMessage');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('guestName').value.trim();
+        if (!name) {
+            msgDiv.innerHTML = '❓ Пожалуйста, укажите ваше имя.';
+            msgDiv.style.color = '#c45a4a';
+            return;
+        }
+        
+        const attending = document.querySelector('input[name="attending"]:checked').value;
+        const count = document.getElementById('guestCount').value;
+        const drinks = document.getElementById('drinks').value;
+        const comment = document.getElementById('comment').value;
+        
+        let responses = JSON.parse(localStorage.getItem('weddingResponses') || '[]');
+        
+        const newResponse = {
+            id: Date.now(),
+            name: name,
+            attending: attending,
+            count: count,
+            drinks: drinks,
+            comment: comment,
+            timestamp: new Date().toLocaleString('ru-RU')
+        };
+        responses.push(newResponse);
+        localStorage.setItem('weddingResponses', JSON.stringify(responses));
+        
+        form.reset();
+        document.querySelector('input[value="yes"]').checked = true;
+        
+        if (attending === 'yes') {
+            msgDiv.innerHTML = `🎉 ${name}, спасибо! Ждём вас${count > 1 ? ` с компанией (${count} чел.)` : ''} 26 июня. 🥂`;
+            msgDiv.style.color = '#2f6e47';
+        } else {
+            msgDiv.innerHTML = `🕊️ ${name}, очень жаль, что не сможете быть. Будем скучать!`;
+            msgDiv.style.color = '#aa8f6e';
+        }
+        
+        setTimeout(() => {
+            msgDiv.innerHTML = '';
+        }, 5000);
+    });
+</script>
+</body>
+</html>
