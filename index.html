@@ -133,11 +133,10 @@
     }
     updateCountdown(); setInterval(updateCountdown, 1000);
 
-    // ========== ОТПРАВКА В GOOGLE ТАБЛИЦУ ==========
     const form = document.getElementById('weddingForm');
     const msgDiv = document.getElementById('responseMessage');
 
-    // ⚠️ ВСТАВЬТЕ ВАШУ ССЫЛКУ ИЗ APPS SCRIPT
+    // ⚠️ ВСТАВЬ СВОЮ ССЫЛКУ ИЗ APPS SCRIPT (та же, что была)
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwICiagzwB7UuwWmg8T5VJouu1E22fX03G0_7YLon6qvj-WvPp2trSPiqF4M4Pa1Hi7uw/exec';
 
     form.addEventListener('submit', async (e) => {
@@ -151,21 +150,32 @@
         const drinks = document.getElementById('drinks').value;
         const comment = document.getElementById('comment').value;
         
-        const data = { name, attending, count, drinks, comment };
+        // Отправляем как form-data (это самый надёжный способ)
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('attending', attending);
+        formData.append('count', count);
+        formData.append('drinks', drinks);
+        formData.append('comment', comment);
         
         try {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: formData
             });
             
-            msgDiv.innerHTML = `🎉 ${name}, спасибо! Ответ отправлен. Ждём вас! 🥂`;
-            msgDiv.style.color = '#2f6e47';
-            form.reset();
-            document.querySelector('input[value="yes"]').checked = true;
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                msgDiv.innerHTML = `🎉 ${name}, спасибо! Ответ сохранён. Ждём вас! 🥂`;
+                msgDiv.style.color = '#2f6e47';
+                form.reset();
+                document.querySelector('input[value="yes"]').checked = true;
+            } else {
+                throw new Error(result.message);
+            }
         } catch (error) {
+            console.error(error);
             msgDiv.innerHTML = '❌ Ошибка. Попробуйте ещё раз.';
             msgDiv.style.color = '#c45a4a';
         }
