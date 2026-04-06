@@ -4,25 +4,23 @@
     <meta charset="UTF-8">
     <title>Админ-панель | Ринат & Ангелина</title>
     <style>
-        body { font-family: 'Raleway', sans-serif; background: #fef7e8; padding: 20px; }
-        h1 { font-family: 'Playfair Display', serif; color: #3a6b47; }
-        table { border-collapse: collapse; width: 100%; background: white; border-radius: 28px; overflow: hidden; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        body { font-family: Arial, sans-serif; background: #fef7e8; padding: 20px; }
+        h1 { color: #3a6b47; }
+        table { border-collapse: collapse; width: 100%; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         th { background: #4b7b5a; color: white; }
-        .yes { color: #2f6e47; font-weight: bold; }
-        .no { color: #c27d64; font-weight: bold; }
-        .refresh-btn { background: #4b7b5a; color: white; border: none; padding: 8px 20px; border-radius: 40px; cursor: pointer; margin-bottom: 20px; }
-        .refresh-btn:hover { background: #3a5e46; }
+        .yes { color: green; font-weight: bold; }
+        .no { color: red; font-weight: bold; }
+        button { background: #4b7b5a; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <h1>🌿 Ответы гостей</h1>
-    <button class="refresh-btn" id="refreshBtn">🔄 Обновить</button>
+    <button onclick="load()">🔄 Обновить</button>
     <div id="responses">Загрузка...</div>
 
     <script>
-        // ⚠️ ВСТАВЬ СВОЙ URL ИЗ RENDER
-        const API_URL = 'https://wedding-server-zyzg.onrender.com';
+        const API_URL = 'https://wedding-server-zyzg.onrender.com/api/responses';
         
         async function load() {
             try {
@@ -34,8 +32,8 @@
                     return;
                 }
                 
-                let html = '<table><thead><tr><th>Время</th><th>Имя</th><th>Присутствие</th><th>Гостей</th><th>Напитки</th><th>Комментарий</th></tr></thead><tbody>';
-                data.forEach(r => {
+                let html = '<tr><thead><tr><th>Время</th><th>Имя</th><th>Присутствие</th><th>Гостей</th><th>Напитки</th><th>Комментарий</th></tr></thead><tbody>';
+                for (let r of data) {
                     html += `<tr>
                         <td>${new Date(r.created_at).toLocaleString()}</td>
                         <td><strong>${escapeHtml(r.name)}</strong></td>
@@ -44,7 +42,7 @@
                         <td>${escapeHtml(r.drinks || '—')}</td>
                         <td>${escapeHtml(r.comment || '—')}</td>
                     </tr>`;
-                });
+                }
                 html += '</tbody></table>';
                 document.getElementById('responses').innerHTML = html;
             } catch (e) {
@@ -62,7 +60,6 @@
             });
         }
         
-        document.getElementById('refreshBtn').addEventListener('click', load);
         load();
         setInterval(load, 10000);
     </script>
