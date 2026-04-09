@@ -40,6 +40,44 @@
         .timer-wrapper { text-align: center; font-size: 2rem; font-weight: 600; font-family: 'Playfair Display', serif; color: #3a6b47; margin-bottom: 1.5rem; }
         footer { text-align: center; padding: 2rem; color: #aac2a4; border-top: 1px solid #edf6e8; margin-top: 2rem; }
         @media (max-width: 680px) { .names { font-size: 2.7rem; } .date-big { font-size: 1.9rem; } .love-signature { font-size: 1.2rem; } }
+        /* Улучшенный стиль для radio-кнопок на телефонах */
+        @media (max-width: 680px) {
+            .radio-group {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .radio-group label {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 16px;
+                background: white;
+                border: 1px solid #ddecd5;
+                border-radius: 48px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            
+            .radio-group label:active {
+                background: #f0f8ec;
+                transform: scale(0.98);
+            }
+            
+            .radio-group input[type="radio"] {
+                width: 20px;
+                height: 20px;
+                margin: 0;
+                cursor: pointer;
+                accent-color: #4b7b5a;
+            }
+            
+            .radio-group span {
+                flex: 1;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
