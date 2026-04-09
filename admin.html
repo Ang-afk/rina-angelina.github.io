@@ -4,64 +4,346 @@
     <meta charset="UTF-8">
     <title>Админ-панель | Ринат & Ангелина</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #fef7e8; padding: 20px; }
-        h1 { color: #3a6b47; }
-        table { border-collapse: collapse; width: 100%; background: white; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        th { background: #4b7b5a; color: white; }
-        .yes { color: green; font-weight: bold; }
-        .no { color: red; font-weight: bold; }
-        button { background: #4b7b5a; color: white; border: none; padding: 8px 16px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #fef7e8;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4b7b5a 0%, #3a5e46 100%);
+            color: white;
+            padding: 30px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .toolbar {
+            padding: 20px 30px;
+            background: #f8f6f0;
+            border-bottom: 1px solid #e0e7d6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        button {
+            background: #4b7b5a;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background: #3a5e46;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .filter {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .filter select {
+            padding: 8px 16px;
+            border-radius: 25px;
+            border: 1px solid #ddecd5;
+            font-family: inherit;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            padding: 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        
+        th {
+            background: #4b7b5a;
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+        
+        tr:hover {
+            background: #fef9f0;
+        }
+        
+        .yes {
+            color: #2d6a4f;
+            font-weight: bold;
+            background: #e8f5e9;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .no {
+            color: #c45a4a;
+            font-weight: bold;
+            background: #ffebee;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .guest-badge {
+            background: #e3f2fd;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .comment-cell {
+            max-width: 250px;
+            word-wrap: break-word;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .refresh-indicator {
+            font-size: 0.8rem;
+            color: #7e9a76;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .toolbar {
+                padding: 15px 20px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+            .comment-cell {
+                max-width: 150px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>🌿 Ответы гостей</h1>
-    <button onclick="load()">🔄 Обновить</button>
-    <div id="responses">Загрузка...</div>
+    <div class="container">
+        <div class="header">
+            <h1>🌿 Ответы гостей</h1>
+            <div class="stats" id="stats">Загрузка...</div>
+        </div>
+        
+        <div class="toolbar">
+            <button onclick="load()">🔄 Обновить</button>
+            <div class="filter">
+                <label>📋 Фильтр:</label>
+                <select id="filterSelect" onchange="applyFilter()">
+                    <option value="all">Все гости</option>
+                    <option value="yes">Только придут</option>
+                    <option value="no">Только не придут</option>
+                </select>
+            </div>
+            <div class="refresh-indicator" id="refreshInfo">Автообновление: 10 сек</div>
+        </div>
+        
+        <div class="table-wrapper">
+            <div id="responses">Загрузка...</div>
+        </div>
+    </div>
 
     <script>
         const API_URL = 'https://wedding-server-zyzg.onrender.com/api/responses';
+        let allResponses = [];
         
         async function load() {
             try {
                 const res = await fetch(API_URL);
-                const data = await res.json();
+                allResponses = await res.json();
+                applyFilter();
+                updateStats();
                 
-                if (!data.length) {
-                    document.getElementById('responses').innerHTML = '<p>📭 Пока нет ответов</p>';
-                    return;
-                }
+                // Анимация обновления
+                const btn = document.querySelector('button');
+                btn.style.transform = 'rotate(360deg)';
+                setTimeout(() => btn.style.transform = '', 500);
                 
-                let html = '<tr><thead><tr><th>Время</th><th>Имя</th><th>Присутствие</th><th>Гостей</th><th>Напитки</th><th>Комментарий</th></tr></thead><tbody>';
-                for (let r of data) {
-                    html += `<tr>
-                        <td>${new Date(r.created_at).toLocaleString()}</td>
-                        <td><strong>${escapeHtml(r.name)}</strong></td>
-                        <td class="${r.attending === 'yes' ? 'yes' : 'no'}">${r.attending === 'yes' ? '✅ Будет' : '❌ Не будет'}</td>
-                        <td>${r.guests}</td>
-                        <td>${escapeHtml(r.drinks || '—')}</td>
-                        <td>${escapeHtml(r.comment || '—')}</td>
-                    </tr>`;
-                }
-                html += '</tbody></table>';
-                document.getElementById('responses').innerHTML = html;
             } catch (e) {
-                document.getElementById('responses').innerHTML = '<p>❌ Ошибка загрузки. Проверь, работает ли сервер.</p>';
+                document.getElementById('responses').innerHTML = '<div class="empty-state">❌ Ошибка загрузки. Проверьте соединение с сервером.</div>';
+                console.error('Ошибка:', e);
             }
+        }
+        
+        function applyFilter() {
+            const filter = document.getElementById('filterSelect').value;
+            let filtered = allResponses;
+            
+            if (filter === 'yes') {
+                filtered = allResponses.filter(r => r.attending === 'yes');
+            } else if (filter === 'no') {
+                filtered = allResponses.filter(r => r.attending === 'no');
+            }
+            
+            renderTable(filtered);
+        }
+        
+        function renderTable(data) {
+            if (!data.length) {
+                document.getElementById('responses').innerHTML = '<div class="empty-state">📭 Пока нет ответов от гостей</div>';
+                return;
+            }
+            
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>⏰ Время</th>
+                            <th>👤 Имя</th>
+                            <th>✅ Присутствие</th>
+                            <th>👥 Гостей</th>
+                            <th>🥂 Напитки</th>
+                            <th>💬 Комментарий</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            for (let r of data) {
+                const attendingClass = r.attending === 'yes' ? 'yes' : 'no';
+                const attendingText = r.attending === 'yes' ? '✅ Будет' : '❌ Не будет';
+                const date = new Date(r.created_at);
+                const formattedDate = date.toLocaleString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                html += `
+                    <tr>
+                        <td style="white-space: nowrap;">${formattedDate}</td>
+                        <td><strong>${escapeHtml(r.name)}</strong></td>
+                        <td><span class="${attendingClass}">${attendingText}</span></td>
+                        <td><span class="guest-badge">👥 ${r.guests}</span></td>
+                        <td>${escapeHtml(r.drinks) || '—'}</td>
+                        <td class="comment-cell">${escapeHtml(r.comment) || '—'}</td>
+                    </tr>
+                `;
+            }
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            document.getElementById('responses').innerHTML = html;
+        }
+        
+        function updateStats() {
+            const total = allResponses.length;
+            const coming = allResponses.filter(r => r.attending === 'yes').length;
+            const notComing = allResponses.filter(r => r.attending === 'no').length;
+            
+            let totalGuests = 0;
+            allResponses.forEach(r => {
+                if (r.attending === 'yes') {
+                    totalGuests += parseInt(r.guests) || 1;
+                }
+            });
+            
+            document.getElementById('stats').innerHTML = `📊 Всего ответов: ${total} | ✅ Придут: ${coming} (${totalGuests} чел.) | ❌ Не придут: ${notComing}`;
         }
         
         function escapeHtml(str) {
             if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
         
+        // Загружаем при открытии
         load();
-        setInterval(load, 10000);
+        
+        // Автообновление каждые 10 секунд
+        let interval = setInterval(load, 10000);
+        
+        // Останавливаем автообновление, если страница не видна (экономия трафика)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearInterval(interval);
+            } else {
+                interval = setInterval(load, 10000);
+                load(); // сразу обновляем при возврате
+            }
+        });
     </script>
 </body>
 </html>
